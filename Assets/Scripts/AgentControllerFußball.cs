@@ -60,6 +60,7 @@ public class AgentControllerFußball : Agent
         continiousActions[1] = Input.GetAxisRaw("Vertical");
     }
 
+    //Methode die vom Ball aufgerufen wird sobald er in einen Collider rollt
     public void BallAction(Collider other)
     {
         Debug.Log(other.tag);
@@ -87,6 +88,7 @@ public class AgentControllerFußball : Agent
         }
     }
 
+    //Wenn der Agent gegen etwas Rennt
     private void OnCollisionEnter(Collision other) {
         if (other.gameObject.CompareTag(ball.tag)) {
             other.rigidbody.AddForce((other.transform.position - transform.localPosition) * 5, ForceMode.Impulse);
@@ -95,29 +97,16 @@ public class AgentControllerFußball : Agent
             float distanceFromPlayerToGoal = Vector3.Distance(transform.position,rightGoal.transform.position);
             float distanceFromBallToGoal = Vector3.Distance(ball.transform.position,rightGoal.transform.position);
 
+            //EndEpisode war nur für das Lernen
             if (distanceFromPlayerToGoal > distanceFromBallToGoal) {
                 AddReward(3f);
                 Debug.Log("+");
+                //EndEpisode();
             } else {
                 AddReward(-1f);
                 Debug.Log("-");
+                // EndEpisode();
             }
         }
     }
-
-    IEnumerator GetKickReward(float distance, float delayTime) {
-        yield return new WaitForSeconds(delayTime);
-
-        float newDistance = Vector3.Distance(ball.transform.position, rightGoal.transform.position);
-
-        if (newDistance < distance) {
-            AddReward(5f);
-            Debug.Log("+");
-        } else {
-            AddReward(-1f);
-            Debug.Log("-");
-        }
-    }
-
-
 }
